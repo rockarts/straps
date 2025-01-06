@@ -6,10 +6,15 @@ function App() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    // Log the current path to help debug
-    console.log('Fetching from:', '/exercises.json');
+    // Determine the correct path based on the environment
+    const basePath = import.meta.env.DEV
+      ? '' // Local development
+      : '/straps'; // Your GitHub repository name
 
-    fetch('/exercises.json')
+    const jsonPath = `${basePath}/exercises.json`;
+    console.log('Fetching from:', jsonPath);
+
+    fetch(jsonPath)
       .then(response => {
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -17,8 +22,7 @@ function App() {
         return response.json();
       })
       .then(data => {
-        console.log('Loaded exercises:', data); // Log the loaded data
-        // Sort exercises alphabetically by name
+        console.log('Loaded exercises:', data);
         const sortedExercises = data.sort((a, b) => a.name.localeCompare(b.name));
         setExercises(sortedExercises);
       })
